@@ -4,10 +4,10 @@ import java.util.UUID;
 
 public class Boat {
     enum BoatType {
-        BRYLLUPSSUITE,
-        BUSINESSUITE,
-        KVALITETSROM,
-        LAVPRISROM;
+        DECK BOAT,
+        CENTRE CONSOLE BOAT,
+        CUDY BOAT,
+        CATAMARAN;
     }
 
     UUID boatId = UUID.randomUUID();
