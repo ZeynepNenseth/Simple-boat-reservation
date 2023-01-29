@@ -7,7 +7,6 @@ public class Reservation {
     public Boat boat;
     public LocalDate date;
 
-    public Reservation (){}
     public Reservation (Boat boat, int numberPeople, LocalDate date) {
         this.boat = boat;
         this.numberPeople = numberPeople;
