@@ -1,5 +1,6 @@
 package boatsale.no;
 
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.time.LocalDate;
@@ -40,18 +41,56 @@ public class BoatReservation {
         ArrayList<Boat> sortetBoatProfitList = boatList;
         Collections.sort(sortetBoatProfitList, new Comparator<Boat>() {
             @Override
-            public int compare(Boat o1, Boat o2) {
-                return calculateProfitBoat(o2.boatId) - calculateProfitBoat(o1.boatId); // default er ascending order, dette blir descending
+            public int compare(Boat b1, Boat b2) {
+                return calculateProfitBoat(b2.boatId) - calculateProfitBoat(b1.boatId); // default er ascending order, dette blir descending
             }
         });
         return sortetBoatProfitList;
     }
 
-    public int calculateMaxNrUninterruptedReservation (UUID boatId) {
+    public ArrayList<Reservation> sortReservationAfterDate (ArrayList<Reservation> sortedBookingDateList) {
+        Collections.sort(sortedBookingDateList, new Comparator<Reservation>() {
+            @Override
+            public int compare(Reservation r1, Reservation r2) {
+                return r1.date.compareTo(r2.date);
+            }
+        });
+        return sortedBookingDateList;
+    }
+    static long getDayDiff (Period period) {
+        long years = period.getYears();
+        long months = period.getMonths();
+        long days = period.getDays();
+
+        return (years * 365) + (months * 30) + days;
+    }
+
+    public int calculateMaxUninterruptedReservationDays (UUID boatId) {
+        ArrayList<Reservation> reservationsForBoats = new ArrayList<>();
+        ArrayList<Integer> numberDays = new ArrayList<>();
+
         int maxNumberDays = 0;
-        for (int i = 0; i < reservationList.size(); i++) {
-         //   if (reservationList. == boatId[i+])
+
+        for (Reservation r : reservationList) {
+            if (r.boat.boatId == boatId) {
+                reservationsForBoats.add(r);
+            }
         }
+
+        reservationsForBoats = sortReservationAfterDate(reservationsForBoats);
+
+        for (int i = 0; i < reservationsForBoats.size(); i++) {
+            Period p = Period.between(reservationsForBoats.get(i).date, reservationsForBoats.get(i + 1).date);
+            if (getDayDiff(p) == 1) {
+                maxNumberDays++;
+            } else {
+                numberDays.add(maxNumberDays);
+                maxNumberDays = 0;
+            }
+        }
+        Collections.sort(numberDays);
+
+        maxNumberDays = numberDays.get(numberDays.size() - 1);
         return maxNumberDays;
     }
 
