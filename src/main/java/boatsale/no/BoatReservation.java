@@ -36,7 +36,7 @@ public class BoatReservation {
     public void registerReservation (UUID boatId, int numberPeople, LocalDate reservationDate) {
         Boat foundBoat = null;
         for (Boat boat : boatList) {
-            if (boat.boatId.equals(boatId)) {
+            if (boat.boatId.equals(boatId) && isAvailableByDate(boatId, reservationDate) && isAvailableBySize(boatId, numberPeople)) {
                 foundBoat = boat;
             }
         }
