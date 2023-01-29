@@ -16,14 +16,31 @@ public class BoatReservation {
         boatList.add(newBoat);
     }
 
-    public void registerReservation (UUID boatId, int numberPeople, LocalDate bookingDate) {
+    public boolean isAvailableByDate (UUID boatId, LocalDate reservationDate) {
+        for (Reservation reservations : reservationList) {
+            if (reservations.boat.boatId.equals(boatId) && reservations.date != reservationDate) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isAvailableBySize (UUID boatId, int numberPeople) {
+        for (Reservation reservations : reservationList) {
+            if (reservations.boat.boatId.equals(boatId) && reservations.boat.numberSeats >= numberPeople) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public void registerReservation (UUID boatId, int numberPeople, LocalDate reservationDate) {
         Boat foundBoat = null;
         for (Boat boat : boatList) {
             if (boat.boatId.equals(boatId)) {
                 foundBoat = boat;
             }
         }
-        Reservation newReservation = new Reservation (foundBoat, numberPeople, bookingDate);
+        Reservation newReservation = new Reservation (foundBoat, numberPeople, reservationDate);
         reservationList.add(newReservation);
     }
 
