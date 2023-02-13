@@ -33,11 +33,13 @@ public class BoatReservation {
         }
         return false;
     }
-    public void registerReservation (UUID boatId, int numberPeople, LocalDate reservationDate) {
+    public void registerReservation (UUID boatId, int numberPeople, LocalDate reservationDate) throws Exception {
         Boat foundBoat = null;
         for (Boat boat : boatList) {
             if (boat.boatId.equals(boatId) && isAvailableByDate(boatId, reservationDate) && isAvailableBySize(boatId, numberPeople)) {
                 foundBoat = boat;
+            } else {
+                throw new Exception ("This reservation is not valid! Please write correct information");
             }
         }
         Reservation newReservation = new Reservation (foundBoat, numberPeople, reservationDate);
@@ -111,8 +113,18 @@ public class BoatReservation {
         return maxNumberDays;
     }
 
-    public static void main(String[] args) {
+    @Override
+    public String toString() {
+        return boatList.toString();
+    }
 
-        System.out.println("Hello world!");
+    public static void main(String[] args) throws Exception {
+        BoatReservation boatReservation = new BoatReservation();
+        boatReservation.registerBoat(5, Boat.BoatType.CUDY_BOAT, 1_000);
+        boatReservation.registerBoat(10, Boat.BoatType.CATAMARAN, 4_500);
+        boatReservation.registerBoat(3, Boat.BoatType.DECK_BOAT, 800);
+        boatReservation.registerReservation(UUID.randomUUID(), 3, LocalDate.of(2021,10,9));
+        boatReservation.registerReservation(UUID.randomUUID(), 8, LocalDate.of(2021,10,12));
+        boatReservation.registerReservation(UUID.randomUUID(), 5, LocalDate.of(2021,8,15));
     }
 }
